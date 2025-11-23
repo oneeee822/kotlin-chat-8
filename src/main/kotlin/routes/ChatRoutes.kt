@@ -3,6 +3,8 @@ package routes
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import kotlinx.html.*
 import service.ChatService
 
@@ -99,6 +101,28 @@ fun Application.configureChatRoutes() {
         }
 
 
+        // 채팅 로직
+        webSocket("/chat") {
+            val userName = ChatService.joinUser(this)
+            try {
+                send("MY_ID:$userName")
+                ChatService.broadcast("🎮 NEW PLAYER [$userName] HAS JOINED THE GAME!")
+
+                for (frame in incoming) {
+                    frame as? Frame.Text ?: continue
+                    val text = frame.readText()
+
+                    if (text == "/extend") {
+                        ChatService.extendTime()
+                    } else if (text.trim().isNotEmpty()) {
+                        ChatService.broadcast("$userName: $text")
+                    }
+                }
+            } finally {
+                ChatService.leaveUser(this)
+                ChatService.broadcast("PLAYER [$userName] DISCONNECTED.")
+            }
+        }
 
     }
 }
