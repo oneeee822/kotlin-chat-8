@@ -65,4 +65,11 @@ class ChatService {
             try { it.send(message) } catch (e: Exception) {}
         }
     }
+
+    // 시간 연장
+    suspend fun extendTime() {
+        val newTime = boomTime.addAndGet(30 * 1000)
+        broadcast("SYNC_TIME:$newTime")
+        broadcast("BONUS STAGE! 누군가가 '레벨업' 아이템을 사용했습니다! (+30s)")
+    }
 }
