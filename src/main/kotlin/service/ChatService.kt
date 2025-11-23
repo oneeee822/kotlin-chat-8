@@ -24,4 +24,11 @@ class ChatService {
     fun leaveUser(session: DefaultWebSocketSession) {
         connections -= session
     }
+
+    // 전체 방송
+    suspend fun broadcast(message: String) {
+        connections.forEach {
+            try { it.send(message) } catch (e: Exception) {}
+        }
+    }
 }
