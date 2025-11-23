@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.collections.LinkedHashSet
 
-class ChatService {
+object ChatService {
 
     // 5분 타이머
     val boomTime = AtomicLong(System.currentTimeMillis() + (5 * 60 * 1000))
